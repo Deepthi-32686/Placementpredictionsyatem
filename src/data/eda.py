@@ -1,5 +1,8 @@
+from statistics import correlation
+
 from src.data.load_data import load_data
 import matplotlib.pyplot as plt
+import seaborn as sns
 def basic_eda(df):
     print("First 5 rows")
     print(df.head())
@@ -37,7 +40,7 @@ def univariate(df):
     plt.title("Histogram of CGPA")
     plt.xlabel("CGPA")
     plt.ylabel("Frequency")
-    plt.savefig(r"C:\Users\HP V\PycharmProjects\Placementpredictionsystem\results\histogram.png")
+    plt.savefig(r"C:\Users\HP V\PycharmProjects\Placementpredictionsystem\app\static\charts\CGPA_hist.png")
     plt.show()
     gendercount = df["Gender"].value_counts()
     plt.figure(figsize=(6,5))
@@ -64,11 +67,28 @@ def bivariate(df):
     plt.savefig(r"C:\Users\HP V\PycharmProjects\Placementpredictionsystem\app\static\charts\boxplot.png")
     plt.show()
     plt.close()
+def multivariate(df):
+    data = df[["CGPA", "AptitudeTestScore","PlacementStatus"]]
+    correlation = data.corr()
+    plt.figure(figsize=(6,5))
+    sns.heatmap(correlation,
+                annot=True,
+                cmap="coolwarm",
+                fmt=".2f" )
+    plt.title("Correlation Heatmap")
+    plt.savefig(r"C:\Users\HP V\PycharmProjects\Placementpredictionsystem\app\static\charts\CorrelationHeatmap.png")
+    plt.show()
+    plt.close()
 
+    entire_corr = df.corr(numeric_only=True)  # <--- Use df directly here!
 
-
-
-
+    plt.figure(figsize=(10, 8))  # Slightly larger figure so labels aren't squeezed
+    sns.heatmap(entire_corr, annot=True, cmap="coolwarm", fmt=".2f")
+    plt.title("Correlation Heatmap (Entire Dataset)")
+    plt.savefig(
+        r"C:\Users\HP V\PycharmProjects\Placementpredictionsystem\app\static\charts\correlationHeatmapEntire.png")
+    plt.show()
+    plt.close()
 
 
 
@@ -76,7 +96,8 @@ def bivariate(df):
 if __name__ == "__main__":
     df=load_data()
     #basic_eda(df)
-    #univariate(df)
-    bivariate(df)
+    univariate(df)
+    #bivariate(df)
+    multivariate(df)
 
 
